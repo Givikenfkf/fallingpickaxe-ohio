@@ -1,85 +1,481 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Fun Games</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: white;
-            text-align: center;
-            margin-top: 40px;
-        }
-        .container {
-            background: #2b2b2b;
-            padding: 25px;
-            border-radius: 15px;
-            display: inline-block;
-            box-shadow: 0px 0px 15px black;
-            width: 350px;
-        }
-        h1 {
-            font-size: 32px;
-        }
-        a {
-            display: block;
-            background: #222;
-            padding: 10px;
-            border-radius: 8px;
-            color: cyan;
-            font-size: 22px;
-            margin: 12px 0;
-            text-decoration: none;
-            transition: 0.2s;
-        }
-        a:hover {
-            background: #111;
-            color: yellow;
-            transform: scale(1.05);
-        }
-        img {
-            width: 250px;
-            border-radius: 10px;
-            margin-top: 10px;
-            border: 3px solid #444;
-        }
-        .email-box {
-            margin-top: 15px;
-            font-size: 15px;
-            background: #111;
-            padding: 10px;
-            border-radius: 8px;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fun Games</title>
+<style>
+  :root{
+    --bg:#0f0f12;
+    --card:#1f1f24;
+    --muted:#bfc3c8;
+    --accent:#00d1ff;
+    --accent-2:#ffd400;
+    --glass: rgba(255,255,255,0.03);
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: Inter, system-ui, Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(0,160,255,0.04), transparent),
+                radial-gradient(800px 400px at 90% 90%, rgba(255,210,0,0.03), transparent),
+                var(--bg);
+    color:#fff;
+    scroll-behavior: smooth; /* smooth scrolling */
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* Page container */
+  .page {
+    max-width:1100px;
+    margin:28px auto;
+    padding:22px;
+  }
+
+  header {
+    display:flex;
+    gap:16px;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+
+  .brand {
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .logo {
+    font-size:28px;
+    padding:10px;
+    border-radius:10px;
+    background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  }
+  h1 { margin:0; font-size:20px; letter-spacing:0.6px; }
+
+  /* Search */
+  .search {
+    display:flex;
+    gap:8px;
+    align-items:center;
+    min-width:320px;
+  }
+  .search input{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.06);
+    background:var(--glass);
+    color:var(--muted);
+    font-size:15px;
+    outline:none;
+  }
+  .search button{
+    padding:10px 14px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    color:#000;
+    font-weight:600;
+  }
+
+  /* Email / submit */
+  .submit-box{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    padding:12px;
+    border-radius:10px;
+    font-size:14px;
+    color:var(--muted);
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .submit-box b { color:var(--accent); }
+
+  /* Category section */
+  section.category{
+    margin:20px 0;
+  }
+  section .heading {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+  }
+  section h2 { margin:0; font-size:16px; color:var(--muted); }
+
+  /* Carousel container */
+  .carousel-wrap{
+    position:relative;
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    padding:12px;
+    border-radius:12px;
+    overflow:hidden;
+  }
+
+  .carousel {
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    padding-bottom:8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .carousel::-webkit-scrollbar{ height:8px; }
+  .carousel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius:8px; }
+
+  .card{
+    min-width:200px;
+    flex:0 0 auto;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:10px;
+    padding:14px;
+    align-items:center;
+    display:flex;
+    gap:10px;
+    scroll-snap-align:center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+  }
+  .card img{ width:56px; height:56px; border-radius:8px; object-fit:cover; }
+  .card a{
+    color:var(--accent);
+    font-weight:600;
+    text-decoration:none;
+    font-size:15px;
+  }
+  .card p{ margin:4px 0 0; color:var(--muted); font-size:13px; }
+
+  /* arrows */
+  .arrow {
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(0,0,0,0.45);
+    border-radius:999px;
+    width:36px;height:36px;
+    display:grid;place-items:center;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.03);
+    backdrop-filter: blur(4px);
+  }
+  .arrow.left{ left:8px; }
+  .arrow.right{ right:8px; }
+
+  /* GIF and info panel */
+  .hero {
+    display:flex;
+    gap:18px;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .hero img{
+    width:180px;
+    height:120px;
+    border-radius:10px;
+    object-fit:cover;
+    border:3px solid rgba(255,255,255,0.04);
+  }
+  .hero .info { max-width:780px; text-align:left; color:var(--muted); }
+  .hero .info p{ margin-top:8px; font-size:14px; }
+
+  /* Responsive */
+  @media (max-width:760px){
+    .carousel { gap:10px; }
+    .card { min-width:150px; padding:12px; }
+    .search { min-width:unset; width:100%; }
+    header{ gap:10px; }
+    .hero { flex-direction:column; align-items:center; }
+  }
+
+  /* Falling capybaras (emoji) */
+  .capy-wrapper {
+    pointer-events:none;
+    position:fixed;
+    inset:0;
+    overflow:visible;
+    z-index:0;
+  }
+  .capy {
+    position:fixed;
+    font-size:28px;
+    will-change: transform, opacity;
+    opacity:0.95;
+    transform-origin:center;
+    animation-name:fall;
+    animation-timing-function:linear;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-10vh) rotate(0deg) scale(1); opacity:1; }
+    90% { opacity:0.95; }
+    100% { transform: translateY(120vh) rotate(360deg) scale(0.9); opacity:0; }
+  }
+
+  /* footer */
+  footer { margin-top:22px; color:var(--muted); font-size:13px; text-align:center; }
+  .hint{ color:rgba(255,255,255,0.22); font-size:12px; margin-top:6px; }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>🎮 Fun Games 🎮</h1>
+<div class="capy-wrapper" id="capy-wrapper" aria-hidden="true"></div>
 
-        <!-- GAME LINKS -->
-        <a href="https://play.fancade.com/" target="_blank">Fancade</a>
-        <a href="https://baldis-basics-online.github.io/" target="_blank">Baldi's Basics</a>
-        <a href="https://poki.com/en/g/subway-surfers" target="_blank">Subway Surfers</a>
-        <a href="https://poki.com" target="_blank">Poki Games</a>
-        <a href="https://orteil.dashnet.org/cookieclicker/" target="_blank">Cookie Clicker</a>
-        <a href="https://krunker.io/" target="_blank">Krunker.io</a>
-        <a href="https://shellshock.io/" target="_blank">Shell Shockers</a>
-        <a href="https://skribbl.io/" target="_blank">Skribbl.io</a>
-        <a href="https://agar.io/" target="_blank">Agar.io</a>
-
-        <!-- GIF -->
-        <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyYTR3cjVrOTV4cGxjOG54ZmhqeW9raDJmZmcwcTI2Znc2YmZwOXhoaiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Fr5LA2RCQbnVp74CxH/200.gif">
-
-        <!-- EMAIL BOX -->
-        <div class="email-box">
-            📩 Want to submit a game? Email:<br>
-            <b style="color:cyan;">bigoboyscato@gmail.com</b><br>
-            ⚠️ Please make the subject:<br>
-            <b style="color:yellow;">Submission</b>
-        </div>
-
+<div class="page" role="main">
+  <header>
+    <div class="brand">
+      <div class="logo">🎮</div>
+      <div>
+        <h1>Fun Games</h1>
+        <div class="hint">A neat place to find quick browser games</div>
+      </div>
     </div>
 
+    <div class="search" role="search" aria-label="Search games">
+      <input id="search" type="search" placeholder="Search games or categories (try: 'poki', 'io', 'arcade')">
+      <button id="clearBtn" title="Clear search">Clear</button>
+    </div>
+
+    <div class="submit-box" title="Email to submit a game">
+      <span>📩 Submit a game:</span>
+      <div>
+        <div><b>bigoboyscato@gmail.com</b></div>
+        <div class="hint">Please put <b>Submission</b> in the subject</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero" aria-hidden="false">
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyYTR3cjVrOTV4cGxjOG54ZmhqeW9raDJmZmcwcTI2Znc2YmZwOXhoaiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Fr5LA2RCQbnVp74CxH/200.gif" alt="Subway Surfers preview">
+    <div class="info">
+      <strong style="color:var(--accent)">Welcome!</strong>
+      <p>Use the search box to quickly find games. Scroll categories or use arrows to browse. Tap any game to open it in a new tab. Enjoy the capybara rain — toggle it off below if it's too much.</p>
+      <div style="margin-top:6px">
+        <button id="toggleCapy" style="padding:8px 12px;border-radius:8px;border:none;cursor:pointer;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#000;font-weight:700">Toggle Capy Rain</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category: Popular -->
+  <section class="category" data-category="popular">
+    <div class="heading">
+      <h2>Popular Picks</h2>
+    </div>
+    <div class="carousel-wrap">
+      <div class="arrow left" data-dir="-1" aria-hidden="true">◀</div>
+      <div class="carousel" id="popular-carousel">
+        <div class="card" data-title="Fancade">
+          <img src="https://play-lh.googleusercontent.com/8rQZK1pJ6ZMEqqvKkL5Yqj2mFS3bXl6g1Vn2u0J0YHGTf3V-9VY5mJqI3dn1nTn8w" alt="Fancade">
+          <div>
+            <a href="https://play.fancade.com/" target="_blank" rel="noopener">Fancade</a>
+            <p>Mini games & creation</p>
+          </div>
+        </div>
+
+        <div class="card" data-title="Subway Surfers">
+          <img src="https://images.poki.com/9a0ae7d1a6b2c61aa55e6b5c6453b3b7.png" alt="Subway Surfers">
+          <div>
+            <a href="https://poki.com/en/g/subway-surfers" target="_blank" rel="noopener">Subway Surfers</a>
+            <p>Endless runner</p>
+          </div>
+        </div>
+
+        <div class="card" data-title="Cookie Clicker">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect fill='%23f7c948' rx='10' width='80' height='80'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='22' fill='%23111'>🍪</text></svg>" alt="Cookie">
+          <div>
+            <a href="https://orteil.dashnet.org/cookieclicker/" target="_blank" rel="noopener">Cookie Clicker</a>
+            <p>Idle baking fun</p>
+          </div>
+        </div>
+
+        <div class="card" data-title="Krunker">
+          <img src="https://krunker.io/img/krunker_logo_small.png" alt="Krunker">
+          <div>
+            <a href="https://krunker.io/" target="_blank" rel="noopener">Krunker.io</a>
+            <p>Fast FPS in browser</p>
+          </div>
+        </div>
+
+        <div class="card" data-title="Baldi's Basics">
+          <img src="https://baldis-basics-online.github.io/assets/images/icon.png" alt="Baldi">
+          <div>
+            <a href="https://baldis-basics-online.github.io/" target="_blank" rel="noopener">Baldi's Basics</a>
+            <p>Classic spooky learning</p>
+          </div>
+        </div>
+      </div>
+      <div class="arrow right" data-dir="1" aria-hidden="true">▶</div>
+    </div>
+  </section>
+
+  <!-- Category: Multiplayer -->
+  <section class="category" data-category="multiplayer">
+    <div class="heading">
+      <h2>Multiplayer / .io</h2>
+    </div>
+    <div class="carousel-wrap">
+      <div class="arrow left" data-dir="-1" aria-hidden="true">◀</div>
+      <div class="carousel" id="multi-carousel">
+        <div class="card" data-title="Agar.io"><img src="" alt=""><div><a href="https://agar.io/" target="_blank" rel="noopener">Agar.io</a><p>Grow and conquer</p></div></div>
+        <div class="card" data-title="Skribbl.io"><img src="" alt=""><div><a href="https://skribbl.io/" target="_blank" rel="noopener">Skribbl.io</a><p>Draw & guess</p></div></div>
+        <div class="card" data-title="Shell Shockers"><img src="" alt=""><div><a href="https://shellshock.io/" target="_blank" rel="noopener">Shell Shockers</a><p>Egg shooter mayhem</p></div></div>
+        <div class="card" data-title="Slither.io"><img src="" alt=""><div><a href="https://slither.io/" target="_blank" rel="noopener">Slither.io</a><p>Snake multiplayer</p></div></div>
+      </div>
+      <div class="arrow right" data-dir="1" aria-hidden="true">▶</div>
+    </div>
+  </section>
+
+  <!-- Category: Puzzle & Chill -->
+  <section class="category" data-category="casual">
+    <div class="heading">
+      <h2>Puzzle & Casual</h2>
+    </div>
+    <div class="carousel-wrap">
+      <div class="arrow left" data-dir="-1" aria-hidden="true">◀</div>
+      <div class="carousel" id="casual-carousel">
+        <div class="card" data-title="2048"><img src="" alt=""><div><a href="https://play2048.co/" target="_blank" rel="noopener">2048</a><p>Number sliding puzzle</p></div></div>
+        <div class="card" data-title="GeoGuessr"><img src="" alt=""><div><a href="https://www.geoguessr.com/" target="_blank" rel="noopener">GeoGuessr</a><p>Guess the location</p></div></div>
+        <div class="card" data-title="Falling Sand"><img src="" alt=""><div><a href="https://simulator.io/" target="_blank" rel="noopener">Sandbox Sim</a><p>Play with physics</p></div></div>
+      </div>
+      <div class="arrow right" data-dir="1" aria-hidden="true">▶</div>
+    </div>
+  </section>
+
+  <footer>
+    Tip: On mobile, swipe horizontally inside a category to browse. <br>
+    <div class="hint">Made with ❤️ — want more categories or your custom list added? Email <b style="color:var(--accent)">bigoboyscato@gmail.com</b></div>
+  </footer>
+</div>
+
+<script>
+/* ---------- Utility: create fallback images when remote not loaded ---------- */
+document.querySelectorAll('.card img').forEach(img=>{
+  if(!img.getAttribute('src') || img.getAttribute('src')===''){
+    img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect rx="10" width="80" height="80" fill="%23222222"/><text x="50%" y="55%" font-size="26" text-anchor="middle" dominant-baseline="middle" fill="%23bbbbbb">🎮</text></svg>';
+  }
+});
+
+/* ---------- Carousels: arrow controls ---------- */
+document.querySelectorAll('.carousel-wrap').forEach(wrapper=>{
+  const carousel = wrapper.querySelector('.carousel');
+  const btnLeft = wrapper.querySelector('.arrow.left');
+  const btnRight = wrapper.querySelector('.arrow.right');
+
+  if(btnLeft) btnLeft.addEventListener('click', ()=> {
+    carousel.scrollBy({ left: -carousel.clientWidth * 0.7, behavior: 'smooth' });
+  });
+  if(btnRight) btnRight.addEventListener('click', ()=> {
+    carousel.scrollBy({ left: carousel.clientWidth * 0.7, behavior: 'smooth' });
+  });
+});
+
+/* ---------- Search: filter cards by title or link text ---------- */
+const searchInput = document.getElementById('search');
+const clearBtn = document.getElementById('clearBtn');
+
+function filterCards() {
+  const query = (searchInput.value || '').trim().toLowerCase();
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card=>{
+    const title = (card.dataset.title || '').toLowerCase();
+    const anchor = card.querySelector('a');
+    const linkText = anchor ? (anchor.textContent||'').toLowerCase() : '';
+    const desc = (card.querySelector('p')?.textContent||'').toLowerCase();
+    const matches = !query || title.includes(query) || linkText.includes(query) || desc.includes(query);
+    card.style.display = matches ? 'flex' : 'none';
+  });
+}
+searchInput.addEventListener('input', filterCards);
+clearBtn.addEventListener('click', ()=>{
+  searchInput.value='';
+  filterCards();
+});
+
+/* ---------- Toggle capybara rain ---------- */
+const capyWrapper = document.getElementById('capy-wrapper');
+let capyEnabled = true;
+const toggleCapy = document.getElementById('toggleCapy');
+toggleCapy.addEventListener('click', ()=> {
+  capyEnabled = !capyEnabled;
+  capyWrapper.style.display = capyEnabled ? 'block' : 'none';
+});
+
+/* ---------- Capybara rain generator ---------- */
+/* We'll use a friendly emoji as the capybara graphic.
+   This spawns random capy emoji elements that fall with varied speed and size.
+*/
+const CAPY_EMOJI = '🦦'; // playful otter/capybar-ish emoji
+const MAX_ON_SCREEN = 28;
+let capyCount = 0;
+
+function spawnCapy() {
+  if(!capyEnabled) return;
+  if(capyCount >= MAX_ON_SCREEN) return;
+
+  const el = document.createElement('div');
+  el.className = 'capy';
+  el.innerText = CAPY_EMOJI;
+
+  // random horizontal start (slightly outside edges allowed)
+  const startX = Math.random() * 110; // viewport width percentage
+  const size = 18 + Math.random()*28; // px
+  const duration = 5000 + Math.random()*7000; // ms
+  const delay = Math.random()*800;
+
+  el.style.left = startX + 'vw';
+  el.style.fontSize = size + 'px';
+  el.style.animationDuration = duration + 'ms';
+  el.style.animationDelay = delay + 'ms';
+  el.style.zIndex = 0;
+  capyWrapper.appendChild(el);
+  capyCount++;
+
+  // remove after animation ends
+  el.addEventListener('animationend', ()=>{
+    el.remove();
+    capyCount--;
+  });
+}
+
+/* spawn at intervals */
+let spawnInterval = setInterval(()=> {
+  // spawn 1-2 at a time sometimes
+  spawnCapy();
+  if(Math.random() > 0.65) spawnCapy();
+}, 450);
+
+/* stop creating when toggled off */
+toggleCapy.addEventListener('click', ()=> {
+  if(!capyEnabled) {
+    clearInterval(spawnInterval);
+  } else {
+    spawnInterval = setInterval(()=> {
+      spawnCapy();
+      if(Math.random() > 0.65) spawnCapy();
+    }, 450);
+  }
+});
+
+/* initial filter (in case user types something before) */
+filterCards();
+
+/* Accessibility: allow arrow buttons to control nearest carousel when focused */
+document.querySelectorAll('.arrow').forEach(btn=>{
+  btn.tabIndex = 0;
+  btn.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' ') btn.click();
+  });
+});
+
+/* Optional: reduce motion if user prefers that */
+if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  document.querySelectorAll('.capy').forEach(el=> el.style.animationDuration = '2s');
+  document.documentElement.style.scrollBehavior = 'auto';
+}
+</script>
 </body>
 </html>
